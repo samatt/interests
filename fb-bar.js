@@ -63,13 +63,8 @@ var Chart = (function(){
 	}
 
 	function updateGraph(newPhrase){
-		// if(newPhrase in Object.keys(data)){
 			currentSelection = data[newPhrase];	
-			draw()
-		// }
-		// else{
-			// console.log("Phrase not in data");
-		// }
+			draw();
 	}
 
 	function init(cb){
@@ -80,9 +75,6 @@ var Chart = (function(){
 			data = parser(json);
 			phrases = Object.keys(data);
 			currentSelection = data["violence"];
-			// console.log(data);
-			// console.log(currentSelection);
-			// currentSelection = phrases[0];
 			  draw();
 			  cb(phrases);
 
@@ -126,7 +118,6 @@ var Chart = (function(){
 
 	return {
       init:init,
-      draw:draw,
       updateGraph:updateGraph,
       getPhrases:getPhrases
     }
