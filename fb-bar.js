@@ -3,13 +3,11 @@ var Chart = (function(){
 	var params = {
 		w : 960,
 		h : 500,
-		file : "interests_war_noun_phrases_unique.json",
-	    // files : ['../data/data.tsv','../data/data-alt.tsv','../data/data.tsv',],
-	    // index :0,    
+		file : "interests_war_noun_phrases_unique.json",   
 	    selector : "#chart",
 	    f : " "
 	}
-
+	/* D3 Stuff */
 	var margin = {top: 20, right: 10, bottom: 30, left: 110},
 	width = params.w - margin.left - margin.right,
 	height = params.h - margin.top - margin.bottom;
@@ -27,18 +25,19 @@ var Chart = (function(){
 	var yAxis = d3.svg.axis()
 		.scale(y)
 		.orient("left");
+	
 	var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<span style='fill:black;'>" + d.value + " people"+"</span>";
+      return "<span'>" + d.value + " people"+"</span>";
     });
 
+    /* Data Stuff */
 	var chart;
 	var phrases = [];
 	var data = {};
 	var currentSelection = {};
-	// var loaded = False;
 
 	function parser(json){
 		var parsed = {}
@@ -49,7 +48,6 @@ var Chart = (function(){
 				if(values.length > 0){
 					for (var v in values){
 						thing = values[v]
-						// console.log(thing["name"]+" "+thing["audience_size"]);
 						interest.push({"name": thing["name"],"value":thing["audience_size"]})
 					} 
 					parsed[key] = interest;
@@ -63,12 +61,19 @@ var Chart = (function(){
 	}
 
 	function updateGraph(newPhrase){
-			currentSelection = data[newPhrase];	
-			draw();
+		currentSelection = data[newPhrase];	
+
+		if(newPhrase > phrases){
+			draw();	
+		}
+		else{
+			console.log("Not enough data for :" + newPhrase)
+		}
+		
 	}
 
 	function init(cb){
-		filename = "interests_war_noun_phrases_unique.json";
+		filename = params.file;
 		
 		d3.json(filename, function(error, json) {
 			
@@ -77,9 +82,7 @@ var Chart = (function(){
 			currentSelection = data["violence"];
 			  draw();
 			  cb(phrases);
-
 		});
-	
 
 	}
 	function draw(){
@@ -109,7 +112,7 @@ var Chart = (function(){
 			.append("rect")
 			.attr("class", "bar")
 			.attr("x", function(d) {  return x(d.name); })
-			.attr("y", function(d) { console.log(y(d.value)); return y(d.value); })
+			.attr("y", function(d) {  return y(d.value); })
 			.attr("height", function(d) {  return height - y(d.value); })
 			.attr("width", x.rangeBand())
 		  .on('mouseover', tip.show)
