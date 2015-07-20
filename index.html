@@ -6,6 +6,18 @@
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 	<style>
+
+		#chart{
+			margin: auto;
+			margin-top: 5%;
+		}
+		
+		.controls{
+			display: block;
+		  	margin-left: auto;
+		  	margin-right: auto;
+		  	padding: 2px;
+		}
 		.bar { fill: rgba(59, 89, 152,0.9); }
 		.text {
   			fill:black;
@@ -54,9 +66,13 @@
 	<script src="fb-bar.js"></script>
 </head>
 <body>
+	<div id="controls">
+	<select id="phrases" class="controls"></select>
+	<button type="button" onclick="onClick()" class="controls">Refresh</button>
+	</div>
+	
 	<div id="chart"></div>
-    	<select id="phrases"></select>
-    	<button type="button" onclick="onClick()" class="pure-button pure-button-primary pure-u-3-3">Refresh</button>
+    	
 </body>
 
 	<script type="text/javascript">
