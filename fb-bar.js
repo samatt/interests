@@ -4,10 +4,10 @@ var Chart = (function(){
 		w : 960,
 		h : 500,
 		file : "interests_war_noun_phrases_unique.json",   
-	    selector : "#chart",
-	    f : " "
+		selector : "#chart",
+		f : " "
 	}
-	/* D3 Stuff */
+
 	var margin = {top: 20, right: 10, bottom: 30, left: 110},
 	width = params.w - margin.left - margin.right,
 	height = params.h - margin.top - margin.bottom;
@@ -19,21 +19,21 @@ var Chart = (function(){
 	.range([height, 0]);
 
 	var xAxis = d3.svg.axis()
-	  .scale(x)
-	  .orient("bottom");
+	.scale(x)
+	.orient("bottom");
 
 	var yAxis = d3.svg.axis()
-		.scale(y)
-		.orient("left");
+	.scale(y)
+	.orient("left");
 	
 	var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<span'>" + d.value + " people"+"</span>";
-    });
+	.attr('class', 'd3-tip')
+	.offset([-10, 0])
+	.html(function(d) {
+		return "<span'>" + d.value + " people"+"</span>";
+	});
 
-    /* Data Stuff */
+
 	var chart;
 	var phrases = [];
 	var data = {};
@@ -41,19 +41,19 @@ var Chart = (function(){
 
 	function parser(json){
 		var parsed = {}
-			for (var d in json) {
-				key = decodeURIComponent(d);
-				values = json[d]
-				interest = []
-				if(values.length > 0){
-					for (var v in values){
-						thing = values[v]
-						interest.push({"name": thing["name"],"value":thing["audience_size"]})
-					} 
-					parsed[key] = interest;
-				}
+		for (var d in json) {
+			key = decodeURIComponent(d);
+			values = json[d]
+			interest = []
+			if(values.length > 0){
+				for (var v in values){
+					thing = values[v]
+					interest.push({"name": thing["name"],"value":thing["audience_size"]})
+				} 
+				parsed[key] = interest;
 			}
-			return parsed;
+		}
+		return parsed;
 	}
 
 	function getPhrases(){
@@ -62,67 +62,58 @@ var Chart = (function(){
 
 	function updateGraph(newPhrase){
 		currentSelection = data[newPhrase];	
-
-		if(newPhrase > phrases){
-			draw();	
-		}
-		else{
-			console.log("Not enough data for :" + newPhrase)
-		}
-		
+		if(newPhrase > phrases){ draw(); }
+		else{ console.log("Not enough data for :" + newPhrase);}
 	}
 
 	function init(cb){
 		filename = params.file;
-		
 		d3.json(filename, function(error, json) {
-			
 			data = parser(json);
 			phrases = Object.keys(data);
 			currentSelection = data["violence"];
-			  draw();
-			  cb(phrases);
+			draw();
+			cb(phrases);
 		});
-
 	}
 	function draw(){
 		d3.selectAll("svg").remove()
 		chart = d3.select(params.selector)
-			.append("svg")
-		    .attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");				
+		.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");				
 		x.domain( currentSelection.map(function(d) { return d.name; }));
 		y.domain([0, d3.max(currentSelection, function(d) { return d.value; })]);
 		chart.call(tip);
 		chart.append("g")
-		  .attr("class", "x-axis")
-		  .attr("transform", "translate(0," + height + ")")
-		  .call(xAxis);
+		.attr("class", "x-axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
 
 		chart.append("g")
-		  .attr("class", "y-axis")
-		  .style("text-anchor", "end")
-		  .call(yAxis);
+		.attr("class", "y-axis")
+		.style("text-anchor", "end")
+		.call(yAxis);
 		
 		chart.selectAll(".bar")
-			.data(currentSelection)
-			.enter()
-			.append("rect")
-			.attr("class", "bar")
-			.attr("x", function(d) {  return x(d.name); })
-			.attr("y", function(d) {  return y(d.value); })
-			.attr("height", function(d) {  return height - y(d.value); })
-			.attr("width", x.rangeBand())
-		  .on('mouseover', tip.show)
-		  .on('mouseout', tip.hide);
+		.data(currentSelection)
+		.enter()
+		.append("rect")
+		.attr("class", "bar")
+		.attr("x", function(d) {  return x(d.name); })
+		.attr("y", function(d) {  return y(d.value); })
+		.attr("height", function(d) {  return height - y(d.value); })
+		.attr("width", x.rangeBand())
+		.on('mouseover', tip.show)
+		.on('mouseout', tip.hide);
 	}
 
 	return {
-      init:init,
-      updateGraph:updateGraph,
-      getPhrases:getPhrases
-    }
+		init:init,
+		updateGraph:updateGraph,
+		getPhrases:getPhrases
+	}
 	
 });
